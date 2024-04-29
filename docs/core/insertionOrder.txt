@@ -1,0 +1,8 @@
+languages
+link_types
+words
+language_letters
+language_links
+links
+letters
+wiktextract

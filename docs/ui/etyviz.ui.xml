@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><database name="etyviz" schema="ui" type="PostgreSQL - 16.2 (Ubuntu 16.2-1.pgdg22.04+1)">
+   <tables>
+      <table name="test" remarks="" schema="ui" type="TABLE"/>
+   </tables>
+   <routines>
+      <routine dataAccess="MODIFIES" deterministic="false" name="get_languages(qlang text)" returnType="SETOF languages" securityType="INVOKER" type="FUNCTION">
+         <comment><![CDATA[Returns the first 10 languages matching the wildcard search (looking in both `lang_name` and `lang_code`.]]></comment>
+         <definition language="sql"><![CDATA[SELECT *
+FROM core.languages
+WHERE lower(lang_name) LIKE '%' || lower(qlang) || '%'
+ORDER BY ranking
+LIMIT 15;]]></definition>
+         <parameters>
+            <parameter mode="IN" name="qlang" type="text"/>
+         </parameters>
+      </routine>
+   </routines>
+</database>

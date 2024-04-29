@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?><database name="etyviz" schema="core" type="PostgreSQL - 16.2 (Ubuntu 16.2-1.pgdg22.04+1)">
+   <tables>
+      <table name="language_letters" numRows="91481" remarks="Contains information about the letters used in languages" schema="core" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="lang_code" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="lang_code" foreignKey="language_letters_lang_code_fkey" implied="false" onDeleteCascade="false" schema="core" table="languages"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="letter" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="count" nullable="true" remarks="" size="8" type="counter" typeCode="2001"/>
+         <column autoUpdated="false" defaultValue="null" digits="2" id="3" name="percentage" nullable="true" remarks="" size="5" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="special" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <primaryKey column="lang_code" sequenceNumberInPK="1"/>
+         <primaryKey column="letter" sequenceNumberInPK="2"/>
+         <index name="language_letters_pkey" unique="true">
+            <column ascending="true" name="lang_code"/>
+            <column ascending="true" name="letter"/>
+         </index>
+         <index name="language_letters_special_lang_code_count_idx" unique="false">
+            <column ascending="false" name="special"/>
+            <column ascending="true" name="lang_code"/>
+            <column ascending="false" name="count"/>
+         </index>
+      </table>
+      <table name="language_links" numRows="41241" remarks="Holds data about links between languages." schema="core" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="source_lang_code" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="lang_code" foreignKey="language_links_source_lang_code_fkey" implied="false" onDeleteCascade="false" schema="core" table="languages"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="target_lang_code" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="lang_code" foreignKey="language_links_target_lang_code_fkey" implied="false" onDeleteCascade="false" schema="core" table="languages"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="link_type" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="link_type" foreignKey="language_links_link_type_fkey" implied="false" onDeleteCascade="false" schema="core" table="link_types"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="8" id="3" name="num_links" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
+      </table>
+      <table name="languages" numRows="4492" remarks="Holds information and statistics about languages." schema="core" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="lang_code" nullable="false" remarks="Wiktionary language code." size="2147483647" type="text" typeCode="12">
+            <child column="lang_code" foreignKey="language_letters_lang_code_fkey" implied="false" onDeleteCascade="false" schema="core" table="language_letters"/>
+            <child column="source_lang_code" foreignKey="language_links_source_lang_code_fkey" implied="false" onDeleteCascade="false" schema="core" table="language_links"/>
+            <child column="target_lang_code" foreignKey="language_links_target_lang_code_fkey" implied="false" onDeleteCascade="false" schema="core" table="language_links"/>
+            <child column="lang_code" foreignKey="words_lang_code_fkey" implied="false" onDeleteCascade="false" schema="core" table="words"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="lang_name" nullable="false" remarks="Language name. If several names are found for the same code,&#10;the most used one is saved." size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="8" id="2" name="num_entries" nullable="true" remarks="Number of entries of the language." size="8" type="float4" typeCode="7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="ranking" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="8" id="4" name="percentage" nullable="true" remarks="" size="8" type="float4" typeCode="7"/>
+         <primaryKey column="lang_code" sequenceNumberInPK="1"/>
+         <index name="languages_pkey" unique="true">
+            <column ascending="true" name="lang_code"/>
+         </index>
+         <index name="languages_lower_idx" unique="false"/>
+      </table>
+      <table name="letters" numRows="51493" remarks="" schema="core" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="letter" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="special" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="decomposition" nullable="true" remarks="" size="2147483647" type="_text" typeCode="2003"/>
+         <primaryKey column="letter" sequenceNumberInPK="1"/>
+         <index name="letters_pkey" unique="true">
+            <column ascending="true" name="letter"/>
+         </index>
+      </table>
+      <table name="link_types" remarks="Holds data for each link type." schema="core" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="link_type" nullable="false" remarks="" size="128" type="varchar" typeCode="12">
+            <child column="link_type" foreignKey="language_links_link_type_fkey" implied="false" onDeleteCascade="false" schema="core" table="language_links"/>
+            <child column="link_type" foreignKey="links_link_type_fkey" implied="false" onDeleteCascade="false" schema="core" table="links"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="lang_idx" nullable="false" remarks="" size="16" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="word_idxs" nullable="false" remarks="" size="16" type="_varchar" typeCode="2003"/>
+         <primaryKey column="link_type" sequenceNumberInPK="1"/>
+         <index name="link_data_pkey" unique="true">
+            <column ascending="true" name="link_type"/>
+         </index>
+      </table>
+      <table name="links" numRows="3293827" remarks="Holds all direct links between words (nodes).&#10;The same link type between the same two nodes cannot exist." schema="core" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="source_id" nullable="true" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="node_id" foreignKey="links_source_id_fkey" implied="false" onDeleteCascade="false" schema="core" table="words"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="link_type" nullable="true" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="link_type" foreignKey="links_link_type_fkey" implied="false" onDeleteCascade="false" schema="core" table="link_types"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="target_id" nullable="true" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="node_id" foreignKey="links_target_id_fkey" implied="false" onDeleteCascade="false" schema="core" table="words"/>
+         </column>
+         <index name="links_link_type_idx" unique="false">
+            <column ascending="true" name="link_type"/>
+         </index>
+         <index name="links_target_id_link_type_source_id_idx" unique="true">
+            <column ascending="true" name="target_id"/>
+            <column ascending="true" name="link_type"/>
+            <column ascending="true" name="source_id"/>
+         </index>
+      </table>
+      <table name="wiktextract" numRows="8889262" remarks="This table holds the full wiktextract dump, in raw format.&#10;Each entry is a line containing the full JSON object.&#10;It is initially populated by a script parsing the dump file." schema="core" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="line_no" nullable="false" remarks="Line number of the entry in the wiktextract file.&#10;This is later used as the unique ID of the extracted word." size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="jdoc" nullable="false" remarks="Full JSON object of the entry.&#10;It is used to fill the other tables from the raw data." size="2147483647" type="jsonb" typeCode="1111"/>
+         <primaryKey column="line_no" sequenceNumberInPK="1"/>
+         <index name="wiktextract_pkey" unique="true">
+            <column ascending="true" name="line_no"/>
+         </index>
+      </table>
+      <table name="words" numRows="9397226" remarks="Holds all nodes possible in the etymology graph.&#10;    Each node is a unique combination of word, lang_code, etym_no and pos" schema="core" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="node_id" nullable="false" remarks="ID of the entry. Originally the line number of the wiktextract dump." size="10" type="int4" typeCode="4">
+            <child column="source_id" foreignKey="links_source_id_fkey" implied="false" onDeleteCascade="false" schema="core" table="links"/>
+            <child column="target_id" foreignKey="links_target_id_fkey" implied="false" onDeleteCascade="false" schema="core" table="links"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="word" nullable="false" remarks="Lemma of the entry." size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="lang_code" nullable="false" remarks="Wiktionary language code of the entry.&#10;    Is used to access more data on languages from the separate table." size="2147483647" type="text" typeCode="12">
+            <parent column="lang_code" foreignKey="words_lang_code_fkey" implied="false" onDeleteCascade="false" schema="core" table="languages"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="etym_no" nullable="true" remarks="Etymology number of the entry.&#10;    Used in the case of homonyms to help distinguish between forms." size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="pos" nullable="true" remarks="Part of speech of the entry." size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="translit" nullable="true" remarks="Transliteration of the entry in Latin alphabet." size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="gloss" nullable="true" remarks="Translation of the entry in English language.&#10;    This is the first meaning from the list of meanings." size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="relevancy" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <primaryKey column="node_id" sequenceNumberInPK="1"/>
+         <index name="words_pkey" unique="true">
+            <column ascending="true" name="node_id"/>
+         </index>
+         <index name="words_lang_code_word_etym_no_idx" unique="true">
+            <column ascending="true" name="lang_code"/>
+            <column ascending="true" name="word"/>
+            <column ascending="true" name="etym_no"/>
+         </index>
+      </table>
+   </tables>
+   <routines>
+      <routine dataAccess="MODIFIES" deterministic="false" name="get_word_link_count(qid integer)" returnType="integer" securityType="INVOKER" type="FUNCTION">
+         <comment><![CDATA[Returns the number of links of the word with the given ID.]]></comment>
+         <definition language="sql"><![CDATA[SELECT count(*)
+FROM links
+WHERE source_id = qid
+OR target_id = qid]]></definition>
+         <parameters>
+            <parameter mode="IN" name="qid" type="integer"/>
+         </parameters>
+      </routine>
+      <routine dataAccess="MODIFIES" deterministic="false" name="get_words(qword text, qlang_code text)" returnType="SETOF words" securityType="INVOKER" type="FUNCTION">
+         <comment><![CDATA[Return a set of words filtered by `word` and `lang_code`.]]></comment>
+         <definition language="sql"><![CDATA[SELECT *
+FROM words
+WHERE (qlang_code = '' OR lang_code = qlang_code) AND word like qword || '%'
+ORDER BY relevancy DESC, word
+LIMIT 15;]]></definition>
+         <parameters>
+            <parameter mode="IN" name="qword" type="text"/>
+            <parameter mode="IN" name="qlang_code" type="text"/>
+         </parameters>
+      </routine>
+      <routine dataAccess="MODIFIES" deterministic="false" name="insert_language_letters()" securityType="INVOKER" type="PROCEDURE">
+         <comment/>
+         <definition language="sql"><![CDATA[INSERT INTO language_letters (lang_code, letter, special, count, percentage)
+WITH all_letters AS (
+	SELECT
+		lang_code,
+		string_to_table(lower(word), NULL) AS letter
+	FROM words
+),
+letter_counts AS (
+	SELECT
+		lang_code, letter, count(*)
+	FROM all_letters
+	GROUP BY lang_code, letter
+)
+SELECT
+	lang_code,
+	letter,
+	letter IS NOT NFD NORMALIZED AS special,
+	count,
+	count::float / entry_count * 100 AS percentage
+FROM letter_counts
+JOIN languages USING(lang_code)
+WHERE count * 10000 > entry_count;]]></definition>
+         <parameters>
+            <parameter mode="IN"/>
+         </parameters>
+      </routine>
+      <routine dataAccess="MODIFIES" deterministic="false" name="insert_language_links()" securityType="INVOKER" type="PROCEDURE">
+         <comment><![CDATA[Populate the `language_links` table.]]></comment>
+         <definition language="sql"><![CDATA[INSERT INTO core.language_links (source_lang_code, link_type, target_lang_code, num_links)
+SELECT
+	s.lang_code AS source_lang_code,
+	link_type,
+	t.lang_code AS target_lang_code,
+	count(*) AS num_links
+FROM core.links
+JOIN core.words AS s
+	ON s.node_id = links.source_id
+JOIN core.words AS t
+	ON t.node_id = links.target_id
+WHERE s.lang_code <> t.lang_code
+GROUP BY link_type, s.lang_code, t.lang_code]]></definition>
+         <parameters>
+            <parameter mode="IN"/>
+         </parameters>
+      </routine>
+      <routine dataAccess="MODIFIES" deterministic="false" name="insert_languages()" securityType="INVOKER" type="PROCEDURE">
+         <comment><![CDATA[Fills in `languages`. If multiple language names are found for the same language code, the most used is saved in the table.]]></comment>
+         <definition language="sql"><![CDATA[WITH langs AS (
+    SELECT
+        jdoc ->> 'lang_code' AS lang_code,
+        jdoc ->> 'lang' AS lang_name
+    FROM wiktextract
+    WHERE jdoc ? 'lang_code'
+),
+lang_stats AS (
+    SELECT lang_code, lang_name, count(*)
+    FROM langs
+    GROUP BY lang_code, lang_name
+    ORDER BY count(*) DESC
+)
+INSERT INTO languages (
+    lang_code, lang_name
+)
+SELECT lang_code, lang_name
+FROM lang_stats
+ON CONFLICT DO NOTHING;]]></definition>
+         <parameters>
+            <parameter mode="IN"/>
+         </parameters>
+      </routine>
+      <routine dataAccess="MODIFIES" deterministic="false" name="insert_simple_links()" securityType="INVOKER" type="PROCEDURE">
+         <comment><![CDATA[Populate `links` with `wiktextract` data. Excludes `words` with `etym_no` not null (where disambiguation would be needed).]]></comment>
+         <definition language="sql"><![CDATA[INSERT INTO links (
+    source_id, link_type, target_id
+)
+WITH raw_templates AS (
+    SELECT
+        line_no,
+        jsonb_array_elements(jdoc -> 'etymology_templates') AS templ
+    FROM wiktextract
+),
+templates AS (
+    SELECT
+        line_no,
+        templ ->> 'name' AS template_name,
+        templ -> 'args' AS args
+    FROM raw_templates
+),
+arguments_lang AS (
+    SELECT
+        line_no,
+        template_name,
+        args,
+        args ->> lang_idx AS lang_code,
+        word_idxs
+    FROM templates
+    JOIN link_data ON template_name = link_type
+),
+expanded_arguments AS (
+    SELECT
+        line_no,
+        template_name,
+        (jsonb_each_text(args)).key,
+        (jsonb_each_text(args)).value,
+        lang_code,
+        word_idxs
+    FROM arguments_lang
+),
+raw_links AS (
+    SELECT
+        line_no,
+        template_name,
+        lang_code AS target_lang,
+        value AS target_word
+    FROM
+        expanded_arguments
+    WHERE key = ANY(word_idxs)
+)
+SELECT line_no, template_name, target_word.node_id
+FROM raw_links
+JOIN words AS source_word
+ON source_word.node_id = raw_links.line_no
+JOIN words AS target_word
+ON target_word.word = raw_links.target_word
+    AND target_word.lang_code = raw_links.target_lang
+    AND target_word.etym_no IS NULL
+ON CONFLICT DO NOTHING;]]></definition>
+         <parameters>
+            <parameter mode="IN"/>
+         </parameters>
+      </routine>
+      <routine dataAccess="MODIFIES" deterministic="false" name="insert_words()" securityType="INVOKER" type="PROCEDURE">
+         <comment><![CDATA[Populate `words` from `wiktextract` data.]]></comment>
+         <definition language="sql"><![CDATA[INSERT INTO words (
+    node_id, word, lang_code, etym_no, pos, translit, gloss
+)
+SELECT
+    line_no,
+    jdoc ->> 'word',
+    jdoc ->> 'lang_code',
+    (jdoc ->> 'etymology_number')::int,
+    jdoc ->> 'pos',
+    jsonb_path_query_first (
+        jdoc, '($.forms[*] ? (@.tags[0] == "romanization")).form'
+    ) #>> '{}',
+    jdoc #>> ARRAY['senses', '0', 'glosses', '0']
+FROM wiktextract
+WHERE jdoc ? 'word'
+ON CONFLICT DO NOTHING;]]></definition>
+         <parameters>
+            <parameter mode="IN"/>
+         </parameters>
+      </routine>
+      <routine dataAccess="MODIFIES" deterministic="false" name="update_languages_stats()" securityType="INVOKER" type="PROCEDURE">
+         <comment><![CDATA[Counts all the words belonging to a single language.]]></comment>
+         <definition language="plpgsql"><![CDATA[BEGIN
+	
+WITH lang_counts AS (
+    SELECT count(*), jdoc ->> 'lang_code' AS lang_code
+    FROM core.wiktextract
+    WHERE jdoc ? 'lang_code'
+    GROUP BY lang_code
+)
+UPDATE core.languages
+SET num_entries = count
+FROM lang_counts
+WHERE languages.lang_code = lang_counts.lang_code;
+
+with lang_stats as (
+	select *,
+	rank() over(order by num_entries desc) as rnk,
+	num_entries * 100 / sum(num_entries) over() as perc
+from core.languages
+)
+update core.languages
+	set ranking = rnk,
+	percentage = perc
+from lang_stats
+where languages.lang_code = lang_stats.lang_code;
+
+END]]></definition>
+         <parameters>
+            <parameter mode="IN"/>
+         </parameters>
+      </routine>
+      <routine dataAccess="MODIFIES" deterministic="false" name="update_words_relevancy()" securityType="INVOKER" type="PROCEDURE">
+         <comment><![CDATA[Sets each word's relevancy to its total number of links.]]></comment>
+         <definition language="sql"><![CDATA[WITH source_link_count AS (
+	SELECT source_id, count(*)
+	FROM links
+	GROUP BY source_id
+),
+target_link_count AS (
+	SELECT target_id, count(*)
+	FROM links
+	GROUP BY target_id
+),
+words_stats AS (
+	SELECT node_id, coalesce(src.count, 0) + coalesce(trg.count, 0) AS total_count
+	FROM words
+	LEFT OUTER JOIN source_link_count AS src ON source_id = node_id
+	LEFT OUTER JOIN target_link_count AS trg ON target_id = node_id
+)
+UPDATE words
+SET relevancy = total_count
+FROM words_stats
+WHERE words_stats.node_id = words.node_id;]]></definition>
+         <parameters>
+            <parameter mode="IN"/>
+         </parameters>
+      </routine>
+   </routines>
+</database>
